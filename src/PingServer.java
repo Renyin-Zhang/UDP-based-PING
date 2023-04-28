@@ -3,15 +3,15 @@ import java.net.*;
 
 public class PingServer extends Thread{
     private DatagramSocket severSocket;
-    private final byte[] buffer=new byte[2048];
+    private final byte[] buffer = new byte[2048];
 
     public void run(int port) {
         System.out.println("Ping Server Started\n");
         try {
             //Generate server-side socket instance
-            severSocket=new DatagramSocket(port);
+            severSocket = new DatagramSocket(port);
         } catch (SocketException e) {
-            System.out.println("Listening port"+port+"failure, the port is illegally occupied, please choose another one");
+            System.out.println("Listening port" + port + "failure, the port is illegally occupied, please choose another one");
             System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -26,7 +26,7 @@ public class PingServer extends Thread{
                 System.out.println("Group acceptance exception");
                 e.printStackTrace();
             }
-            ServerThread thread= new ServerThread(severSocket, receivePacket);
+            ServerThread thread = new ServerThread(severSocket, receivePacket);
             //Start a thread
             thread.start();
         }
@@ -34,8 +34,8 @@ public class PingServer extends Thread{
 
     public static void main(String []args){
         //Initialize server
-        PingServer pingServer=new PingServer();
-        int port=Integer.parseInt(args[0]);
+        PingServer pingServer = new PingServer();
+        int port = Integer.parseInt(args[0]);
         pingServer.run(port);
     }
 
@@ -44,32 +44,32 @@ public class PingServer extends Thread{
         private final DatagramPacket receivePacket;
         public ServerThread(DatagramSocket severSocket,DatagramPacket receivePacket){
             //Initialize packet and socket
-            this.receivePacket=receivePacket;
-            this.severSocket=severSocket;
+            this.receivePacket = receivePacket;
+            this.severSocket = severSocket;
         }
         public void run(){
             byte[] buffer;
             String request;
             //Define the random time for delayed return messages
-            long randomTime=(long)(Math.random()*2000);
+            long randomTime = (long)(Math.random()*2000);
             try {
                 sleep(randomTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             //Determine if it is a delayed message
-            if(randomTime>1000){
-                request="Packet lost";
+            if(randomTime > 1000){
+                request = "Packet lost";
             }else{
-                request=(new String(receivePacket.getData())).substring(0, 100);
+                request = (new String(receivePacket.getData())).substring(0, 100);
             }
             //Get address from client
-            InetAddress host=receivePacket.getAddress();
+            InetAddress host = receivePacket.getAddress();
             //Get the port number of the client application process
-            int port =receivePacket.getPort();
-            buffer=request.getBytes();
+            int port = receivePacket.getPort();
+            buffer = request.getBytes();
             //The packet sent back to client
-            DatagramPacket sendPacket=new DatagramPacket(buffer,buffer.length,host,port);
+            DatagramPacket sendPacket = new DatagramPacket(buffer,buffer.length,host,port);
             try {
                 //Send packet to client
                 severSocket.send(sendPacket);

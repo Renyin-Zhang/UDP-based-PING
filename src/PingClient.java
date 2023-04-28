@@ -17,13 +17,11 @@ public class PingClient
         InetAddress IPAddress = InetAddress.getByName(ip);
         for (int i = 1; i <= 10; i++)
         {
-            byte[] sendData = new byte[256];
             byte[] receiveData = new byte[256];
             //Generate message
-            String message = "Header: Request " + i + " \n"
-                    + "Payload: PingUDP SequenceNumber:" + i + "\n"+
-                    "Sending time: "+ format.format(new Date()) + "\n";
-            sendData = message.getBytes();
+            String message = "PingUDP SequenceNumber " + i + "\n"+
+                    "Sending time: " + format.format(new Date()) + "\n";
+            byte[] sendData = message.getBytes();
             //Generate example of sending packet
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
             Date sendBefore = new Date();
